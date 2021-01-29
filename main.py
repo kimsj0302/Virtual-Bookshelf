@@ -11,24 +11,68 @@ from enum import Enum
 import functools
 import subprocess
 
+from searchwidget import *
+from addingwidget import *
+from dbmanager import *
+
 
 class BookWidget(QWidget):
     
+    class TARGET(Enum):
+        series = 0
+        books = 1
     def __init__(self) :
         super().__init__()
+        
+        self.dbmanager = DBManger()
+
         self.initUI()
-        book_arr = [self.book1,self.book2,self.book3,self.book4,self.book5,self.book6,self.book7,self.book8,
+        self.book_arr = [self.book1,self.book2,self.book3,self.book4,self.book5,self.book6,self.book7,self.book8,
         self.book9,self.book10,self.book11,self.book12,self.book13,self.book14,self.book15,self.book16,self.book17,self.book18]
+        self.title_arr = [self.title1,self.title2,self.title3,self.title4,self.title5,self.title6,self.title7,self.title8,
+        self.title9,self.title10,self.title11,self.title12,self.title13,self.title14,self.title15,self.title16,self.title17,self.title18]
+        self.page = 1
+
+
+        self.reload()
+
+
+
         '''
         self.bg  = QPixmap()
         self.bg.load("bg.jpg")
         self.bg  = self.bg.scaledToWidth(496)
         self.background.setPixmap(self.bg)
         '''
-        self.addb1(200)
+        #self.addb1(150)
+    def reload(self):
+        self.paste_data()
+    def paste_data(self):
+        for i in range((self.page-1)*18,(self.page)*18):
+            print(i)
+            t = QPixmap()
+            book_gui_index = i - (self.page-1)*18
+            if i >= self.dbmanager.get_target_len():
+                t.load("./empty.jpg")
+                self.title_arr[book_gui_index].setText("")
+            else:
+                t.load(self.dbmanager.get_image(i))
+                self.title_arr[book_gui_index].setText(self.dbmanager.get_title_string(i))
+            t = t.scaledToWidth(200)
+            self.book_arr[book_gui_index].setPixmap(t)
+
+
     def book_clicked(self,label,n,event):
-        print(n)
-        subprocess.run(['C:\Program Files\Honeyview\Honeyview.exe','img.jpg'])
+        print((self.page-1)*18 + n)
+        if (self.page-1)*18 + n < self.dbmanager.get_target_len():
+            if self.dbmanager.is_series():
+                if self.dbmanager.is_series_with_a_book((self.page-1)*18 + n):
+                    subprocess.run(['C:\Program Files\Honeyview\Honeyview.exe',self.dbmanager.get_image((self.page-1)*18 + n)])
+                else:
+                    self.dbmanager.updata_target_by_click_series((self.page-1)*18 + n)
+                    self.reload()
+            else:
+                subprocess.run(['C:\Program Files\Honeyview\Honeyview.exe',self.dbmanager.get_image((self.page-1)*18 + n)])
     def initUI(self):
 
         self.book_grid = QGridLayout()
@@ -167,6 +211,14 @@ class MainWidget(QWidget):
         grid = QGridLayout()
         self.bookwidget = BookWidget()
         
+
+
+        self.home_dir = QPushButton(">",self)
+        self.home_dir.setIcon(QIcon('./images/home.png'))
+
+        self.dir_path = QHBoxLayout()
+        self.dir_path.addWidget(self.home_dir)
+
         self.view_butt = QPushButton("",self)
         self.view_butt.setFixedSize(30,30)
         self.view_butt.clicked.connect(self.view_switch)
@@ -179,17 +231,30 @@ class MainWidget(QWidget):
         self.next_butt.setIcon(QIcon('./images/next.png'))
         self.before_butt.setIcon(QIcon('./images/before.png'))
 
+        self.search_butt = QPushButton("",self)
+        self.search_butt.setFixedSize(30,30)
+        self.search_butt.setIcon(QIcon('./images/search.png'))
+        self.search_butt.clicked.connect(self.search)
+
+        self.add_butt = QPushButton("",self)
+        self.add_butt.setFixedSize(30,30)
+        self.add_butt.setIcon(QIcon('./images/add.png'))
+        self.add_butt.clicked.connect(self.add)
+
         self.current_page = QLabel(" 0 / 0 ")
         
 
         viewline = QHBoxLayout()
+        viewline.addWidget(self.add_butt)
+        viewline.addWidget(self.search_butt)
         viewline.addWidget(self.view_butt)
         viewline.addWidget(self.before_butt)
         viewline.addWidget(self.current_page)
         viewline.addWidget(self.next_butt)
 
-        grid.addItem(viewline,0,0,alignment=Qt.AlignRight)
+        grid.addItem(self.dir_path,0,0,alignment=Qt.AlignLeft)
         grid.addWidget(self.bookwidget,1,0)
+        grid.addItem(viewline,2,0,alignment=Qt.AlignRight)
         self.setLayout(grid)
     def _set_list_view(self):
         self.view_butt.setIcon(QIcon('./images/list.png'))
@@ -201,14 +266,17 @@ class MainWidget(QWidget):
         self.view_state = self.VIEW.Thumbnail
         self.view_butt.setToolTip('Switch to list view')  
         # call function to swtich thumbnail view
-
-
     def view_switch(self):
         if self.view_state == self.VIEW.Thumbnail:
             self._set_list_view()
         else:
             self._set_thumbnail_view()
-
+    def search(self):
+        self.sw = SearchWidget()
+        self.sw.show()
+    def add(self):
+        self.aw = AddingWidget()
+        self.aw.show()
 
 class MainWindow(QMainWindow):
     def __init__(self):
@@ -227,13 +295,5 @@ class MainWindow(QMainWindow):
         self.show()
 if __name__ == "__main__":
     app = QApplication(sys.argv)
-    db = QSqlDatabase.addDatabase("QSQLITE")
-    db.setDatabaseName("./test.db")
-    if db.open():
-        print("open DB success.")
-        query = QSqlQuery()
-        query.exec_("SELECT * FROM person")
-        while query.next():
-            print(query.value(1))
     main= MainWindow()
     app.exec_()

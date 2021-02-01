@@ -16,12 +16,15 @@ class DBManger():
         self.update()
         self.target_arr = self.series_arr
         self.target_info = self.TARGET.series
+    def init(self):
+        self.target_arr = self.series_arr
+        self.target_info = self.TARGET.series
     def update(self):
         query = QSqlQuery()
         query.exec_("SELECT * FROM SERIES")
         self.series_arr = []
         while query.next():
-            self.series_arr.append([query.value(0),query.value(1),query.value(2),query.value(3),query.value(4)])
+            self.series_arr.append([query.value(0),query.value(1),query.value(2),query.value(3)])
         print(self.series_arr)
         query.exec_("SELECT * FROM BOOK")
         self.books_arr = []
@@ -69,3 +72,21 @@ class DBManger():
         else:
             #Will Fix
             return self.series_arr[self.target_arr[index][2]-1][1] + " " +str(self.target_arr[index][1])
+    def get_series_list(self):
+        query = QSqlQuery()
+        query.exec_("SELECT title FROM SERIES")
+        series_arr = []
+        while query.next():
+            series_arr.append(query.value(0))
+        print(series_arr)
+        return series_arr
+    def add_new_book(self,index,series,img_path):
+        query = QSqlQuery()
+        query.exec_("INSERT INTO book(index_,series,img_path) VALUES ("+str(index)+","+str(series)+",\""+img_path+"\")")
+    def get_category_list(self):
+        query = QSqlQuery()
+        query.exec_("SELECT * FROM CATEGORY")
+        category_arr = []
+        while query.next():
+            category_arr.append(query.value(1))
+        return category_arr

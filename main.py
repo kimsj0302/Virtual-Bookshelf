@@ -28,8 +28,6 @@ class BookWidget(QWidget):
         self.initUI()
         self.book_arr = [self.book1,self.book2,self.book3,self.book4,self.book5,self.book6,self.book7,self.book8,
         self.book9,self.book10,self.book11,self.book12,self.book13,self.book14,self.book15,self.book16,self.book17,self.book18]
-        self.title_arr = [self.title1,self.title2,self.title3,self.title4,self.title5,self.title6,self.title7,self.title8,
-        self.title9,self.title10,self.title11,self.title12,self.title13,self.title14,self.title15,self.title16,self.title17,self.title18]
         self.page = 1
 
 
@@ -38,21 +36,17 @@ class BookWidget(QWidget):
         self.paste_data()
     def paste_data(self):
         for i in range((self.page-1)*18,(self.page)*18):
-            print(i)
             t = QPixmap()
             book_gui_index = i - (self.page-1)*18
             if i >= self.dbmanager.get_target_len():
                 t.load("./empty.jpg")
-                self.title_arr[book_gui_index].setText("")
             else:
                 t.load(self.dbmanager.get_image(i))
-                self.title_arr[book_gui_index].setText(self.dbmanager.get_title_string(i))
             t = t.scaledToWidth(175)
             self.book_arr[book_gui_index].setPixmap(t)
 
 
     def book_clicked(self,label,n,event):
-        print((self.page-1)*18 + n)
         if (self.page-1)*18 + n < self.dbmanager.get_target_len():
             if self.dbmanager.is_series():
                 if self.dbmanager.is_series_with_a_book((self.page-1)*18 + n):
@@ -84,24 +78,7 @@ class BookWidget(QWidget):
         self.book17 = QLabel("16")
         self.book18 = QLabel("17")
         
-        self.title1 = QLabel("t0")
-        self.title2 = QLabel("t1")
-        self.title3 = QLabel("t2")
-        self.title4 = QLabel("t3")
-        self.title5 = QLabel("t4")
-        self.title6 = QLabel("t5")
-        self.title7 = QLabel("t6")
-        self.title8 = QLabel("t7")
-        self.title9 = QLabel("t8")
-        self.title10 = QLabel("t9")
-        self.title11 = QLabel("t10")
-        self.title12 = QLabel("t11")
-        self.title13 = QLabel("t12")
-        self.title14 = QLabel("t13")
-        self.title15 = QLabel("t14")
-        self.title16 = QLabel("t15")
-        self.title17 = QLabel("t16")
-        self.title18 = QLabel("t17")
+        self.title = QLabel("")
 
         self.book1.mousePressEvent = functools.partial(self.book_clicked,self.book1,0)
         self.book2.mousePressEvent = functools.partial(self.book_clicked,self.book2,1)
@@ -139,94 +116,29 @@ class BookWidget(QWidget):
         self.book_grid.addWidget(self.book16,4,3,alignment=Qt.AlignCenter)
         self.book_grid.addWidget(self.book17,4,4,alignment=Qt.AlignCenter)
         self.book_grid.addWidget(self.book18,4,5,alignment=Qt.AlignCenter)
-        self.book_grid.addWidget(self.title1,1,0,alignment=Qt.AlignCenter)
-        self.book_grid.addWidget(self.title2,1,1,alignment=Qt.AlignCenter)
-        self.book_grid.addWidget(self.title3,1,2,alignment=Qt.AlignCenter)
-        self.book_grid.addWidget(self.title4,1,3,alignment=Qt.AlignCenter)
-        self.book_grid.addWidget(self.title5,1,4,alignment=Qt.AlignCenter)
-        self.book_grid.addWidget(self.title6,1,5,alignment=Qt.AlignCenter)
-        self.book_grid.addWidget(self.title7,3,0,alignment=Qt.AlignCenter)
-        self.book_grid.addWidget(self.title8,3,1,alignment=Qt.AlignCenter)
-        self.book_grid.addWidget(self.title9,3,2,alignment=Qt.AlignCenter)
-        self.book_grid.addWidget(self.title10,3,3,alignment=Qt.AlignCenter)
-        self.book_grid.addWidget(self.title11,3,4,alignment=Qt.AlignCenter)
-        self.book_grid.addWidget(self.title12,3,5,alignment=Qt.AlignCenter)
-        self.book_grid.addWidget(self.title13,5,0,alignment=Qt.AlignCenter)
-        self.book_grid.addWidget(self.title14,5,1,alignment=Qt.AlignCenter)
-        self.book_grid.addWidget(self.title15,5,2,alignment=Qt.AlignCenter)
-        self.book_grid.addWidget(self.title16,5,3,alignment=Qt.AlignCenter)
-        self.book_grid.addWidget(self.title17,5,4,alignment=Qt.AlignCenter)
-        self.book_grid.addWidget(self.title18,5,5,alignment=Qt.AlignCenter)
+        self.book_grid.addWidget(self.title,1,0,alignment=Qt.AlignCenter)
+        self.book_grid.addWidget(self.title,1,1,alignment=Qt.AlignCenter)
+        self.book_grid.addWidget(self.title,1,2,alignment=Qt.AlignCenter)
+        self.book_grid.addWidget(self.title,1,3,alignment=Qt.AlignCenter)
+        self.book_grid.addWidget(self.title,1,4,alignment=Qt.AlignCenter)
+        self.book_grid.addWidget(self.title,1,5,alignment=Qt.AlignCenter)
+        self.book_grid.addWidget(self.title,3,0,alignment=Qt.AlignCenter)
+        self.book_grid.addWidget(self.title,3,1,alignment=Qt.AlignCenter)
+        self.book_grid.addWidget(self.title,3,2,alignment=Qt.AlignCenter)
+        self.book_grid.addWidget(self.title,3,3,alignment=Qt.AlignCenter)
+        self.book_grid.addWidget(self.title,3,4,alignment=Qt.AlignCenter)
+        self.book_grid.addWidget(self.title,3,5,alignment=Qt.AlignCenter)
+        self.book_grid.addWidget(self.title,5,0,alignment=Qt.AlignCenter)
+        self.book_grid.addWidget(self.title,5,1,alignment=Qt.AlignCenter)
+        self.book_grid.addWidget(self.title,5,2,alignment=Qt.AlignCenter)
+        self.book_grid.addWidget(self.title,5,3,alignment=Qt.AlignCenter)
+        self.book_grid.addWidget(self.title,5,4,alignment=Qt.AlignCenter)
+        self.book_grid.addWidget(self.title,5,5,alignment=Qt.AlignCenter)
 
 
 
         self.setLayout(self.book_grid)
-    #def resizeEvent(self, event):
-        #print("resize")
-        #print(self.frameGeometry().width())
-        #print(self.frameGeometry().height())
-        #QWidget.resizeEvent(self, event)
-
-
-class MainWidget(QWidget):
-    class VIEW(Enum):
-        Thumbnail = 0
-        List = 1
-    def __init__(self,dbmanager) :
-        super().__init__()
-        self.dbmanager = dbmanager
-
-        grid = QGridLayout()
-        self.bookwidget = BookWidget(self.dbmanager)
-
-        #self.home_dir = QPushButton(">",self)
-        #self.home_dir.setIcon(QIcon('./images/home.png'))
-
-        #self.dir_path = QHBoxLayout()
-        #self.dir_path.addWidget(self.home_dir)
-        '''
-        self.view_butt = QPushButton("",self)
-        self.view_butt.setFixedSize(30,30)
-        self.view_butt.clicked.connect(self.view_switch)
-        self._set_thumbnail_view()
-        
-        self.next_butt = QPushButton("",self)
-        self.next_butt.setFixedSize(30,30)
-        self.before_butt = QPushButton("",self)
-        self.before_butt.setFixedSize(30,30)
-        self.next_butt.setIcon(QIcon('./images/next.png'))
-        self.before_butt.setIcon(QIcon('./images/before.png'))
-
-        self.search_butt = QPushButton("",self)
-        self.search_butt.setFixedSize(30,30)
-        self.search_butt.setIcon(QIcon('./images/search.png'))
-        self.search_butt.clicked.connect(self.search)
-
-        self.add_butt = QPushButton("",self)
-        self.add_butt.setFixedSize(30,30)
-        self.add_butt.setIcon(QIcon('./images/add.png'))
-        self.add_butt.clicked.connect(self.add)
-
-        self.current_page = QLabel(" 0 / 0 ")
-        viewline = QStatusBar()
-        
-        viewline.addWidget(self.add_butt)
-        viewline.addWidget(self.search_butt)
-        viewline.addWidget(self.view_butt)
-        viewline.addWidget(self.before_butt)
-        viewline.addWidget(self.current_page)
-        viewline.addWidget(self.next_butt)
-        '''
-        #grid.addItem(self.dir_path,0,0,alignment=Qt.AlignLeft)
-        grid.addWidget(self.bookwidget,1,0)
-
-        #grid.addItem(viewline,2,0,alignment=Qt.AlignRight)
-        self.setLayout(grid)
-    def resizeEvent(self, event):
-        print("resize")
-        print(self.frameGeometry().width())
-        print(self.frameGeometry().height())
-        QWidget.resizeEvent(self, event)    
+    
     def _set_list_view(self):
         self.view_butt.setIcon(QIcon('./images/list.png'))
         self.view_state = self.VIEW.List
@@ -246,75 +158,94 @@ class MainWidget(QWidget):
         self.sw = SearchWidget()
         self.sw.show()
     def add(self):
-        aw = BookAddWidget(self.dbmanager)
+        aw = DataAddWidget(self.dbmanager)
         r = aw.showModal()
-        print(r)
-        print(aw.edit.text())
+        if r:
+            self.dbmanager.add_new_book(aw.get_index(),aw.get_series(),aw.get_path().replace("/","\\"))
+            self.dbmanager.update()
+            self.reload()
 class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
         self.dbmanager = DBManger()
 
-        self.wg = MainWidget(self.dbmanager)
+        self.wg = BookWidget(self.dbmanager)
         
         self.setCentralWidget(self.wg)
 
-        self.init_toolbar()
+        self.init_menu_toolbar()
 
         self.init_statusbar()
 
 
-        '''
-        Menu bar
-        '''
-        menubar = self.menuBar()
-        menu = QMenu('File', self)
-        menubar.addMenu(menu)
         self.show()
-    def init_toolbar(self):
+    def init_menu_toolbar(self):
         addingAction = QAction(QIcon('./images/add.png'),'Add',self)
         addingAction.setShortcut('Ctrl+A')
         addingAction.setStatusTip('add new book')
         addingAction.triggered.connect(self.add)
+        
+        homeAction = QAction(QIcon('./images/home.png'),'Home',self)
+        homeAction.setShortcut('Ctrl+H')
+        homeAction.setStatusTip('Home')
+        homeAction.triggered.connect(self.home)
+
+        searchAction = QAction(QIcon('./images/search.png'),'Search',self)
+        searchAction.setShortcut('Ctrl+S')
+        searchAction.setStatusTip('Search')
+        searchAction.triggered.connect(self.search)
+
+        nextAction = QAction(QIcon('./images/next.png'),'Next Page',self)
+        nextAction.setShortcut('Ctrl+X')
+        nextAction.setStatusTip('next page')
+        nextAction.triggered.connect(self.next)
+
+        
+        beforeAction = QAction(QIcon('./images/before.png'),'Before Page',self)
+        beforeAction.setShortcut('Ctrl+Z')
+        beforeAction.setStatusTip('before page')
+        beforeAction.triggered.connect(self.before)
+
+
         toolbar = self.addToolBar('Add Book')
         toolbar.addAction(addingAction)
+        toolbar.addAction(searchAction)
+        toolbar.addAction(homeAction)
+        toolbar.addAction(beforeAction)
+        toolbar.addAction(nextAction)
+
+
         toolbar.setStyleSheet("background-color: white")
         toolbar.setAllowedAreas(Qt.BottomToolBarArea)
         toolbar.setMovable(False)
         toolbar.setFixedHeight(30)
-        print(toolbar.height())
-    def init_statusbar(self):
-        
-        self.next_butt = QPushButton("",self)
-        self.next_butt.setFixedSize(20,20)
-        self.before_butt = QPushButton("",self)
-        self.before_butt.setFixedSize(20,20)
-        self.next_butt.setIcon(QIcon('./images/next.png'))
-        self.before_butt.setIcon(QIcon('./images/before.png'))
 
+    def init_statusbar(self):
 
 
         self.current_page = QLabel(" 0 / 0 ")
 
         statusbar = self.statusBar()
-        statusbar.addPermanentWidget(self.before_butt)
         statusbar.addPermanentWidget(self.current_page)
-        statusbar.addPermanentWidget(self.next_butt)
 
         statusbar.setStyleSheet("background-color: white")
-        print(statusbar.height())
     def add(self):
         self.wg.add()
+    def next(self):
+        return
+    def before(self):
+        return
+    def home(self):
+        self.dbmanager.init()
+        self.wg.reload()
+    def search(self):
+        return
 if __name__ == "__main__":
     app = QApplication(sys.argv)
     stylesheet = """
         QMainWindow {
             
             background-repeat: no-repeat;
-        }
-        
-        QHBoxLayout#hLayout{
-            background: white; 
         }
     """
     app.setStyleSheet(stylesheet)
